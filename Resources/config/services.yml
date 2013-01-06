@@ -1,0 +1,3 @@
+services:
+    jamesi_http_cache.helper:
+        class: Jamesi\HttpCacheBundle\HttpCache\CachingHelper
