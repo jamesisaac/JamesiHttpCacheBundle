@@ -14,7 +14,7 @@ class CachingHelperTest extends \PHPUnit_Framework_TestCase
         $this->helper = new CachingHelper();
         
         // Example ESI tag
-        $this->esiTag = '<esi:include src="http://foo.bar/" on-error="continue" />';
+        $this->esiTag = '<esi:include src="/" onerror="continue" />';
     }
     
     protected function tearDown()

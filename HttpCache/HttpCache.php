@@ -25,7 +25,7 @@ class HttpCache extends BaseHttpCache
      * Modified constructor which creates the custom Esi class, and additionally
      * adds "application/json" as a valid type
      * 
-     * @param HttpKernelInterface $kernel 
+     * {@inheritDoc}
      */
     public function __construct(HttpKernelInterface $kernel)
     {

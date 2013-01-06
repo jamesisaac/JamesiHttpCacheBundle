@@ -6,8 +6,9 @@ use Symfony\Component\HttpKernel\HttpCache\EsiResponseCacheStrategy as BaseStrat
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * A modified EsiResponseCacheStrategy which doesn't force all pages using 
- * ESI to be public 
+ * A modified strategy which doesn't force all pages using ESI to be public 
+ *
+ * {@inheritDoc}
  */
 class EsiResponseCacheStrategy extends BaseStrategy
 {
@@ -16,9 +17,7 @@ class EsiResponseCacheStrategy extends BaseStrategy
     private $maxAges = array();
     
     /**
-     * Adds a Response.
-     *
-     * @param Response $response
+     * {@inheritDoc}
      */
     public function add(Response $response)
     {
@@ -31,9 +30,7 @@ class EsiResponseCacheStrategy extends BaseStrategy
     }
     
     /**
-     * Updates the Response HTTP headers based on the embedded Responses.
-     *
-     * @param Response $response
+     * {@inheritDoc}
      */
     public function update(Response $response)
     {
@@ -49,6 +46,8 @@ class EsiResponseCacheStrategy extends BaseStrategy
         }
 
         if (null !== $maxAge = min($this->maxAges)) {
+            // This is the change to default behaviour - we only call
+            // setSharedMaxAge if the response was already public
             if ($response->headers->hasCacheControlDirective('public')) {
                 $response->setSharedMaxAge($maxAge);
             } else {
@@ -56,5 +55,6 @@ class EsiResponseCacheStrategy extends BaseStrategy
             }
             $response->headers->set('Age', $maxAge - min($this->ttls));
         }
+        // We also no longer want to force to private maxAge to be 0 here
     }
 }

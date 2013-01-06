@@ -6,10 +6,10 @@ use Symfony\Component\HttpKernel\HttpCache\Esi as BaseEsi;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Jamesi\HttpCacheBundle\HttpCache\EsiResponseCacheStrategy;
-
 /**
  * A modified Esi class which can deal with ESI tags within encoded json
+ *
+ * {@inheritDoc}
  */
 class Esi extends BaseEsi
 {
@@ -20,13 +20,18 @@ class Esi extends BaseEsi
      */
     protected $contentType;
 
-    public function __construct(array $contentTypes = array())
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(array $contentTypes = array('text/html', 'text/xml', 'application/xml', 'application/json'))
     {
         $this->contentTypes = $contentTypes;
     }
     
     /**
-     * Returns a new cache strategy instance - in this case, our custom class
+     * Returns our custom class
+     *
+     * {@inheritDoc}
      */
     public function createCacheStrategy()
     {
@@ -34,10 +39,7 @@ class Esi extends BaseEsi
     }
     
     /**
-     * Replaces a Response ESI tags with the included resource content.
-     *
-     * @param Request  $request  A Request instance
-     * @param Response $response A Response instance
+     * {@inheritDoc}
      */
     public function process(Request $request, Response $response)
     {
@@ -55,6 +57,7 @@ class Esi extends BaseEsi
 
         // we don't use a proper XML parser here as we can have ESI tags in a plain text response
         $content = $response->getContent();
+        $content = str_replace(array('<?', '<%'), array('<?php echo "<?"; ?>', '<?php echo "<%"; ?>'), $content);
         $content = preg_replace_callback('#"?<esi\:include\s+(.*?)\s*.?/>"?#', array($this, 'handleEsiIncludeTag'), $content);
         $content = preg_replace('#<esi\:comment[^>]*/>#', '', $content);
         $content = preg_replace('#<esi\:remove>.*?</esi\:remove>#', '', $content);
@@ -75,7 +78,10 @@ class Esi extends BaseEsi
         }
     }
     
-    private function handleEsiIncludeTag($attributes)
+    /**
+     * {@inheritDoc}
+     */
+    protected function handleEsiIncludeTag($attributes)
     {
         // Strip any backslashes, which will appear in the case of a json response
         $string = stripslashes($attributes[1]);
