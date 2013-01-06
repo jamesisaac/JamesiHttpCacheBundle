@@ -3,7 +3,7 @@ JamesiHttpCacheBundle
 
 This bundle makes two changes to Symfony2's default HTTP cache:
 
-* Allows parts of a view to be cached through ESI, even if the master responsive has a "private" Cache-Control header (Symfony2 will be default force the entire response to be public)
+* Allows parts of a view to be cached through ESI, even if the master response has a "private" Cache-Control header (Symfony2 will be default force the entire response to be public)
 * Makes it possible to use ESI within JSON responses
 
 ## Installation
@@ -125,7 +125,7 @@ public function indexAction()
     
     $responseContent = array(
         'foo'       => 'bar',
-        'objects'   => $json_objects,
+        'objects'   => $jsonObjects,
     );
     
     $response = new Response();

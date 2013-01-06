@@ -5,6 +5,8 @@ namespace Jamesi\HttpCacheBundle\HttpCache;
 class CachingHelper
 {
     /**
+     * Helper for dealing with cached JSON responses.
+     *
      * When rendering a json template as standalone:true in another json
      * controller, pass the content through this before adding it to the
      * response array.
@@ -16,7 +18,7 @@ class CachingHelper
      * it should be json_decoded.
      * 
      * @param string $content
-     * @return string
+     * @return string|mixed
      */
     public function processJsonContent($content)
     {
