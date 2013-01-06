@@ -5,4 +5,4 @@ This bundle makes two changes to Symfony2's default HTTP cache:
 
 For documentation, see:
 
-[`Resources/doc/index.rst`](https://github.com/jamesisaac/JamesiHttpCacheBundle/blob/master/Resources/doc/index.rst)
+[`Resources/doc/index.md`](https://github.com/jamesisaac/JamesiHttpCacheBundle/blob/master/Resources/doc/index.md)

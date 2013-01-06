@@ -9,7 +9,7 @@ This bundle makes two changes to Symfony2's default HTTP cache:
 
 Add the bundle to composer.json
 
-``` json
+``` js
 "require": {
     // ...
     "jamesi/http-cache-bundle": "*"
@@ -55,8 +55,14 @@ parameters:
 <?php
 // app/AppCache.php
 
+require_once __DIR__.'/AppKernel.php';
+
 // use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
 use Jamesi\HttpCacheBundle\HttpCache\HttpCache;
+
+class AppCache extends HttpCache
+{
+}
 ```
 
 ## Usage
