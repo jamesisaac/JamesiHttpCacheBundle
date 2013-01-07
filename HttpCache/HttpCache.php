@@ -12,26 +12,33 @@ use Symfony\Component\HttpKernel\HttpCache\Store;
  * 
  * Base your AppCache class off this, and remember to set the esi.class
  * parameter too! 
+ * 
+ * This does things in a unique way because the structure of this class
+ * changed between Symfony 2.0 and 2.1 - this approach should work with
+ * both versions.
  */
 class HttpCache extends BaseHttpCache
 {
+    protected $cacheDir;
+    protected $kernel;
+
     /**
-     * ESI within JSON can be switched on/off with the inclusion of
-     * "application/json" in this array
-     */
-    protected $esiContentTypes = array('text/html', 'text/xml', 'application/xml', 'application/json');
-    
-    /**
-     * Modified constructor which creates the custom Esi class, and additionally
-     * adds "application/json" as a valid type
+     * Modified constructor which creates the custom Esi class for all Symfony versions
      * 
      * {@inheritDoc}
      */
-    public function __construct(HttpKernelInterface $kernel)
+    public function __construct(HttpKernelInterface $kernel, $cacheDir = null)
     {
-        $store = new Store($kernel->getCacheDir().'/http_cache');
-        $esi = new Esi($this->esiContentTypes);
+        $this->kernel = $kernel;
+        $this->cacheDir = $cacheDir;
+        
+        $store = new Store($this->cacheDir ?: $this->kernel->getCacheDir().'/http_cache');
 
-        BaseParentHttpCache::__construct($kernel, $store, $esi, array_merge(array('debug' => $kernel->isDebug()), $this->getOptions()));
+        BaseParentHttpCache::__construct($kernel, $store, $this->createEsi(), array_merge(array('debug' => $kernel->isDebug()), $this->getOptions()));
+    }
+    
+    protected function createEsi()
+    {
+        return new \Jamesi\HttpCacheBundle\HttpCache\Esi();
     }
 }

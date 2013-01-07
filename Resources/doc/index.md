@@ -94,7 +94,7 @@ public function componentAction()
 ``` twig
 {# index.html.twig #}
 
-{% render 'component' with {}, {'standalone: true} %}
+{% render 'component' with {}, {'standalone': true} %}
 ```
 
 If the bundle is configured correctly, the master response won't have a

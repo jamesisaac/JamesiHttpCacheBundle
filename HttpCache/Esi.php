@@ -14,13 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 class Esi extends BaseEsi
 {
     protected $contentTypes;
-    
-    /**
-     * Content type of the current request
-     */
-    protected $contentType;
 
     /**
+     * Old constructor with added application/json support by default
+     *
      * {@inheritDoc}
      */
     public function __construct(array $contentTypes = array('text/html', 'text/xml', 'application/xml', 'application/json'))
@@ -35,10 +32,12 @@ class Esi extends BaseEsi
      */
     public function createCacheStrategy()
     {
-        return new EsiResponseCacheStrategy();
+        return new \Jamesi\HttpCacheBundle\HttpCache\EsiResponseCacheStrategy();
     }
     
     /**
+     * Re-implimenting because handleEsiIncludeTag and contentTypes are private
+     *
      * {@inheritDoc}
      */
     public function process(Request $request, Response $response)
@@ -50,16 +49,15 @@ class Esi extends BaseEsi
         }
 
         $parts = explode(';', $type);
-        $this->contentType = $parts[0];
-        if (!in_array($this->contentType, $this->contentTypes)) {
+        if (!in_array($parts[0], $this->contentTypes)) {
             return $response;
         }
 
         // we don't use a proper XML parser here as we can have ESI tags in a plain text response
         $content = $response->getContent();
         $content = str_replace(array('<?', '<%'), array('<?php echo "<?"; ?>', '<?php echo "<%"; ?>'), $content);
-        $content = preg_replace_callback('#"?<esi\:include\s+(.*?)\s*.?/>"?#', array($this, 'handleEsiIncludeTag'), $content);
-        $content = preg_replace('#<esi\:comment[^>]*/>#', '', $content);
+        $content = preg_replace_callback('#<esi\:include\s+(.*?)\s*(?:/|</esi\:include)>#', array($this, 'handleEsiIncludeTag'), $content);
+        $content = preg_replace('#<esi\:comment[^>]*(?:/|</esi\:comment)>#', '', $content);
         $content = preg_replace('#<esi\:remove>.*?</esi\:remove>#', '', $content);
 
         $response->setContent($content);
@@ -79,15 +77,17 @@ class Esi extends BaseEsi
     }
     
     /**
+     * Re-implimenting because the method is declared private
+     *
      * {@inheritDoc}
      */
     protected function handleEsiIncludeTag($attributes)
     {
         // Strip any backslashes, which will appear in the case of a json response
-        $string = stripslashes($attributes[1]);
+        $attributes[1] = stripslashes($attributes[1]);
         
         $options = array();
-        preg_match_all('/(src|onerror|alt)="([^"]*?)"/', $string, $matches, PREG_SET_ORDER);
+        preg_match_all('/(src|onerror|alt)="([^"]*?)"/', $attributes[1], $matches, PREG_SET_ORDER);
         foreach ($matches as $set) {
             $options[$set[1]] = $set[2];
         }
