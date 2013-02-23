@@ -1,6 +1,8 @@
 JamesiHttpCacheBundle
 =====================
 
+[![Build Status](https://travis-ci.org/jamesisaac/JamesiHttpCacheBundle.png?branch=master)](https://travis-ci.org/jamesisaac/JamesiHttpCacheBundle)
+
 This bundle makes two changes to Symfony2's default HTTP cache:
 
 * Allows parts of a view to be cached through ESI, even if the master response has a "private" Cache-Control header (Symfony2 will be default force the entire response to be public)
