@@ -1,7 +1,7 @@
 {
     "name": "jamesi/http-cache-bundle",
     "type": "symfony-bundle",
-    "description": "Makes some changes to Symfony2's HttpCache ESI handling",
+    "description": "Gives more power to Symfony2's ESI HttpCache",
     "keywords": ["cache", "esi", "httpcache"],
     "homepage": "https://github.com/jamesisaac/JamesiHttpCacheBundle",
     "license": "MIT",
