@@ -18,6 +18,13 @@ through to other users.
 
 ## Installation
 
+### Enable the HttpCache
+
+Start by enabling Symfony2's HttpCache and ESI support as per the Symfony2 docs:
+
+* http://symfony.com/doc/current/book/http_cache.html#symfony2-reverse-proxy
+* http://symfony.com/doc/current/book/http_cache.html#using-esi-in-symfony2
+
 ### Include using composer
 
 Add the bundle to composer.json
@@ -25,7 +32,7 @@ Add the bundle to composer.json
 ``` js
 "require": {
     // ...
-    "jamesi/http-cache-bundle": "*@dev"
+    "jamesi/http-cache-bundle": "dev-master@dev"
 }
 ```
 
