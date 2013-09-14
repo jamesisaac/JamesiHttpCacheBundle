@@ -1,10 +1,20 @@
 JamesiHttpCacheBundle
 =====================
 
-This bundle makes two changes to Symfony2's default HTTP cache:
+This bundle makes two changes to Symfony2's default HTTP cache (currently
+supporting Symfony 2.1 and 2.2):
 
-* Allows parts of a view to be cached through ESI, even if the master response has a "private" Cache-Control header (Symfony2 will be default force the entire response to be public)
+* Allows parts of a view to be cached through ESI, even if the master response
+  has a "private" Cache-Control header (Symfony2 will be default force the
+  entire response to be public).  This replicates the ``sf_cache_key`` behaviour
+  of Symfony of 1.4 which allowed for easy partial caching.
 * Makes it possible to use ESI within JSON responses
+
+**Disclaimer**: Please only use this bundle if you have a solid understanding
+of ESI caching, as it removes some of the safeguards put in place by default
+with Symfony2.  If you were to, for example, include a user's private content
+via ESI without a cache key that's unique to them, that content is likely to leak
+through to other users.
 
 ## Installation
 
@@ -15,7 +25,7 @@ Add the bundle to composer.json
 ``` js
 "require": {
     // ...
-    "jamesi/http-cache-bundle": "*"
+    "jamesi/http-cache-bundle": "*@dev"
 }
 ```
 
@@ -44,7 +54,7 @@ public function registerBundles()
 
 ### Set the ESI class
 
-Add the following to parameters.ini:
+Add the following to parameters.yml:
 
 ``` yaml
 parameters:
@@ -84,14 +94,14 @@ public function indexAction()
 
 public function componentAction()
 {
-    $response = new Resopnse();
+    $response = new Response();
     $response->setSharedMaxAge(600);
     
     return $this->render('_component.html.twig');
 }
 ```
 
-``` twig
+``` jinja
 {# index.html.twig #}
 
 {% render 'component' with {}, {'standalone': true} %}
@@ -100,6 +110,17 @@ public function componentAction()
 If the bundle is configured correctly, the master response won't have a
 public Cache-Control header, and the "component" response will have been
 cached and served via ESI.
+
+*Cache keys* can be passed in via the first set of parameters, which cause
+ESI to store/retrieve a unique response:
+
+``` jinja
+{# Symfony 2.1 style #}
+{% render 'component' with {'user_id': id}, {'standalone': true} %}
+
+{# Symfony 2.2+ style #}
+{{ render_esi(controller('..:component', { 'token': token})) }}
+```
 
 ### Using ESI within JSON
 

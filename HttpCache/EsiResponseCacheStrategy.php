@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class EsiResponseCacheStrategy extends BaseStrategy
 {
     private $cacheable = true;
+    private $embeddedResponses = 0;
     private $ttls = array();
     private $maxAges = array();
     
@@ -27,6 +28,8 @@ class EsiResponseCacheStrategy extends BaseStrategy
             $this->ttls[] = $response->getTtl();
             $this->maxAges[] = $response->getMaxAge();
         }
+        
+        $this->embeddedResponses++;
     }
     
     /**
@@ -34,8 +37,8 @@ class EsiResponseCacheStrategy extends BaseStrategy
      */
     public function update(Response $response)
     {
-        // if we only have one Response, do nothing
-        if (1 === count($this->ttls)) {
+        // if we have no embedded Response, do nothing
+        if (0 === $this->embeddedResponses) {
             return;
         }
 
@@ -44,6 +47,9 @@ class EsiResponseCacheStrategy extends BaseStrategy
 
             return;
         }
+        
+        $this->ttls[] = $response->getTtl();
+        $this->maxAges[] = $response->getMaxAge();
 
         if (null !== $maxAge = min($this->maxAges)) {
             // This is the change to default behaviour - we only call
