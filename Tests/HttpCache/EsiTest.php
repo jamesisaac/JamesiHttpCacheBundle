@@ -83,7 +83,7 @@ class EsiTest extends \PHPUnit_Framework_TestCase
         $response = new Response(json_encode($content));
         $esi->process($request, $response);
 
-        $this->assertEquals('{"foo":"<?php echo $this->esi->handle($this, \'...\', \'alt\', true) ?>'."\n".'"}', $response->getContent());
+        $this->assertEquals('{"foo":<?php echo $this->esi->handle($this, \'...\', \'alt\', true) ?>'."\n".'}', $response->getContent());
         $this->assertEquals('ESI', $response->headers->get('x-body-eval'));
     }
 }

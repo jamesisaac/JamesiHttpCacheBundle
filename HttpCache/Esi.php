@@ -32,10 +32,7 @@ class Esi extends BaseEsi
      */
     public function createCacheStrategy()
     {
-        // As of Symfony 2.1.10 (commit 2b554d77) this custom implementation is no longer needed
-        // return new \Jamesi\HttpCacheBundle\HttpCache\EsiResponseCacheStrategy();
-        
-        return parent::createCacheStrategy();
+        return new \Jamesi\HttpCacheBundle\HttpCache\EsiResponseCacheStrategy();
     }
     
     /**
@@ -59,9 +56,9 @@ class Esi extends BaseEsi
         // we don't use a proper XML parser here as we can have ESI tags in a plain text response
         $content = $response->getContent();
         $content = str_replace(array('<?', '<%'), array('<?php echo "<?"; ?>', '<?php echo "<%"; ?>'), $content);
-        $content = preg_replace_callback('#"?<esi\:include\s+(.*?)\s*(?:/|</esi\:include)>"?#', array($this, 'handleEsiIncludeTag'), $content);
         $content = preg_replace('#<esi\:comment[^>]*(?:/|</esi\:comment)>#', '', $content);
         $content = preg_replace('#<esi\:remove>.*?</esi\:remove>#', '', $content);
+        $content = preg_replace_callback('#"?<esi\:include\s+(.*?)\s*(?:/|</esi\:include)>"?#', array($this, 'handleEsiIncludeTag'), $content);
 
         $response->setContent($content);
         $response->headers->set('X-Body-Eval', 'ESI');
