@@ -2,12 +2,14 @@ JamesiHttpCacheBundle
 =====================
 
 This bundle makes two changes to Symfony2's default HTTP cache (currently
-supporting Symfony 2.1 and 2.2):
+supporting Symfony versions 2.1 to 2.2):
 
 * Allows parts of a view to be cached through ESI, even if the master response
   has a "private" Cache-Control header (Symfony2 will be default force the
   entire response to be public).  This replicates the ``sf_cache_key`` behaviour
   of Symfony of 1.4 which allowed for easy partial caching.
+  (**Important**: Use release 0.1.1 if you want this feature.  It has been
+  removed from later versions, as Symfony now supports it out of the box).
 * Makes it possible to use ESI within JSON responses
 
 **Disclaimer**: Please only use this bundle if you have a solid understanding
@@ -104,7 +106,7 @@ public function componentAction()
     $response = new Response();
     $response->setSharedMaxAge(600);
     
-    return $this->render('_component.html.twig');
+    return $this->render('_component.html.twig', array(), $response);
 }
 ```
 
@@ -126,7 +128,7 @@ ESI to store/retrieve a unique response:
 {% render 'component' with {'user_id': id}, {'standalone': true} %}
 
 {# Symfony 2.2+ style #}
-{{ render_esi(controller('..:component', { 'token': token})) }}
+{{ render_esi(controller('..:component', { 'token': token })) }}
 ```
 
 ### Using ESI within JSON

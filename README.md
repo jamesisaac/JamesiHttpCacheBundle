@@ -4,12 +4,14 @@ JamesiHttpCacheBundle
 [![Build Status](https://travis-ci.org/jamesisaac/JamesiHttpCacheBundle.png?branch=master)](https://travis-ci.org/jamesisaac/JamesiHttpCacheBundle)
 
 This bundle makes two changes to Symfony2's default HTTP cache (currently
-supporting Symfony 2.1 and 2.2):
+supporting Symfony versions 2.1 and 2.2):
 
 * Allows parts of a view to be cached through ESI, even if the master response
   has a "private" Cache-Control header (Symfony2 will be default force the
   entire response to be public).  This replicates the ``sf_cache_key`` behaviour
   of Symfony of 1.4 which allowed for easy partial caching.
+  (**Important**: Use release 0.1.1 if you want this feature.  It has been
+  removed from later versions, as Symfony now supports it out of the box).
 * Makes it possible to use ESI within JSON responses
 
 **Disclaimer**: Please only use this bundle if you have a solid understanding
